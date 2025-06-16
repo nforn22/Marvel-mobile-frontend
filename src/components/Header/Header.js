@@ -1,0 +1,82 @@
+import React, { useState } from "react";
+import { View, Text, Image, TouchableOpacity, Modal, Pressable } from "react-native";
+import { styles } from "./Header.styles";
+import marvelLogo from "../../../assets/Marvel-logo.png";
+import { Ionicons } from '@expo/vector-icons';
+
+export const Header = ({
+  onOpenSignupModal,
+  onOpenLoginModal,
+  userToken,
+  setUserToken,
+  onNavigate,
+}) => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const handleLogout = () => {
+    setUserToken && setUserToken(null);
+    setIsMobileMenuOpen(false);
+  };
+
+  const handleNavigate = (route) => {
+    onNavigate && onNavigate(route);
+    setIsMobileMenuOpen(false);
+  };
+
+  return (
+    <>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => handleNavigate("Home")} style={styles.logoContainer}>
+          <Image source={marvelLogo} style={styles.logo} resizeMode="contain" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.burgerMenu}
+          onPress={() => setIsMobileMenuOpen(true)}
+        >
+          <Ionicons name="menu" size={32} color="#fff" />
+        </TouchableOpacity>
+      </View>
+      <Modal
+        visible={isMobileMenuOpen}
+        animationType="slide"
+        transparent
+        onRequestClose={() => setIsMobileMenuOpen(false)}
+      >
+        <Pressable style={styles.overlay} onPress={() => setIsMobileMenuOpen(false)} />
+        <View style={styles.mobileMenu}>
+          <TouchableOpacity onPress={() => handleNavigate("Characters")}> 
+            <Text style={styles.mobileNavLink}>Characters</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleNavigate("Comics")}> 
+            <Text style={styles.mobileNavLink}>Comics</Text>
+          </TouchableOpacity>
+          {userToken && (
+            <TouchableOpacity onPress={() => handleNavigate("Favorites")}> 
+              <Text style={styles.mobileNavLink}>Favorites</Text>
+            </TouchableOpacity>
+          )}
+          {userToken ? (
+            <TouchableOpacity onPress={handleLogout}> 
+              <Text style={styles.mobileNavLink}>Log out</Text>
+            </TouchableOpacity>
+          ) : (
+            <>
+              <TouchableOpacity onPress={onOpenSignupModal}> 
+                <Text style={styles.mobileNavLink}>Sign up</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={onOpenLoginModal}> 
+                <Text style={styles.mobileNavLink}>Log in</Text>
+              </TouchableOpacity>
+            </>
+          )}
+          <TouchableOpacity
+            style={styles.closeButton}
+            onPress={() => setIsMobileMenuOpen(false)}
+          >
+            <Ionicons name="close" size={32} color="#fff" />
+          </TouchableOpacity>
+        </View>
+      </Modal>
+    </>
+  );
+};
