@@ -1,7 +1,7 @@
 import { StyleSheet, Dimensions } from "react-native";
 
 const { width } = Dimensions.get('window');
-const buttonWidth = (width - 80) / 2; // 80 = padding total (40 de chaque côté)
+const buttonWidth = (width - 80) / 2;
 
 export const styles = StyleSheet.create({
   container: {

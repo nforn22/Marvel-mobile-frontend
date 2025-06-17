@@ -26,7 +26,7 @@ export const styles = StyleSheet.create({
   navDesktop: {
     flexDirection: "row",
     alignItems: "center",
-    display: "none", // à afficher sur tablette/desktop (voir remarque)
+    display: "none",
   },
   navLink: {
     color: "#fff",

@@ -4,7 +4,6 @@ import { Header } from "../src/components/Header/Header";
 import { styles } from "../src/components/Home/HomeScreen.styles";
 
 export default function HomeScreen() {
-  // callbacks pour les boutons
   const handleExploreHeroes = () => {
     router.push('/characters');
   };
