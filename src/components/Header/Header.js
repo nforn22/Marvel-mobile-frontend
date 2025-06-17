@@ -3,6 +3,7 @@ import { View, Text, Image, TouchableOpacity, Modal, Pressable } from "react-nat
 import { styles } from "./Header.styles";
 import marvelLogo from "../../../assets/Marvel-logo.png";
 import { Ionicons } from '@expo/vector-icons';
+import { router } from "expo-router";
 
 export const Header = ({
   onOpenSignupModal,
@@ -19,7 +20,11 @@ export const Header = ({
   };
 
   const handleNavigate = (route) => {
-    onNavigate && onNavigate(route);
+    if (route === "Characters") {
+      router.push("/characters");
+    } else if (onNavigate) {
+      onNavigate(route);
+    }
     setIsMobileMenuOpen(false);
   };
 
