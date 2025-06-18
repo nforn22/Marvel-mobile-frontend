@@ -66,7 +66,7 @@ export const Header = ({
             </TouchableOpacity>
           ) : (
             <>
-              <TouchableOpacity onPress={onOpenSignupModal}> 
+              <TouchableOpacity onPress={() => { router.push('/auth/signup'); setIsMobileMenuOpen(false); }}> 
                 <Text style={styles.mobileNavLink}>Sign up</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={onOpenLoginModal}> 
