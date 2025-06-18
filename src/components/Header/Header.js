@@ -69,7 +69,7 @@ export const Header = ({
               <TouchableOpacity onPress={() => { router.push('/auth/signup'); setIsMobileMenuOpen(false); }}> 
                 <Text style={styles.mobileNavLink}>Sign up</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={onOpenLoginModal}> 
+              <TouchableOpacity onPress={() => { router.push('/auth/login'); setIsMobileMenuOpen(false); }}>
                 <Text style={styles.mobileNavLink}>Log in</Text>
               </TouchableOpacity>
             </>
