@@ -1,7 +1,7 @@
 import { View, ScrollView, TouchableOpacity, Text, ImageBackground } from "react-native";
 import { router, Stack } from "expo-router";
 import { Header } from "../src/components/Header/Header";
-import { styles } from "../src/components/Home/HomeScreen.styles";
+import { styles } from "../src/styles/HomeScreen.styles";
 
 export default function HomeScreen() {
   const handleExploreHeroes = () => {
