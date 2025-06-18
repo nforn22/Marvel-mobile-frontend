@@ -5,6 +5,7 @@ import marvelLogo from "../../../assets/Marvel-logo.png";
 import { Ionicons } from '@expo/vector-icons';
 import { router } from "expo-router";
 import { AuthContext } from "../../../app/_layout";
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 
 export const Header = ({
   onOpenSignupModal,
@@ -28,6 +29,8 @@ export const Header = ({
       router.push("/comics");
     } else if (route === "Favorites") {
       router.push("/favorites"); // TODO : implementer logique réelle
+    } else if (route === "Profile") {
+      router.push("/profile");
     } else if (onNavigate) {
       onNavigate(route);
     }
@@ -40,12 +43,23 @@ export const Header = ({
         <TouchableOpacity onPress={() => handleNavigate("Home")} style={styles.logoContainer}>
           <Image source={marvelLogo} style={styles.logo} resizeMode="contain" />
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.burgerMenu}
-          onPress={() => setIsMobileMenuOpen(true)}
-        >
-          <Ionicons name="menu" size={32} color="#fff" />
-        </TouchableOpacity>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          {token && (
+            <TouchableOpacity
+              onPress={() => handleNavigate("Profile")}
+              style={{ marginRight: 18 }}
+              accessibilityLabel="Mon Profil"
+            >
+              <FontAwesome6 name="user-circle" size={28} color="#e62429" />
+            </TouchableOpacity>
+          )}
+          <TouchableOpacity
+            style={styles.burgerMenu}
+            onPress={() => setIsMobileMenuOpen(true)}
+          >
+            <Ionicons name="menu" size={32} color="#fff" />
+          </TouchableOpacity>
+        </View>
       </View>
       <Modal
         visible={isMobileMenuOpen}
