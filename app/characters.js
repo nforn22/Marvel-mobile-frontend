@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, TextInput, ActivityIndicator } from "react-native";
+import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, TextInput, ActivityIndicator, Modal, Pressable } from "react-native";
 import axios from "axios";
-import { router } from "expo-router";
+import { router, Stack } from "expo-router";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { Ionicons } from '@expo/vector-icons';
+import { styles as headerStyles } from "../src/components/Header/Header.styles";
 
 const API_URL = "https://site--marvel-backend--t29qzrn4njwx.code.run";
 const PAGE_SIZE = 100;
@@ -14,7 +16,26 @@ export default function CharactersScreen() {
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(0);
   const [search, setSearch] = useState("");
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const userToken = null; 
+
+  const handleLogout = () => {
+    // setUserToken && setUserToken(null); // à activer quand l'auth sera implementé
+    setIsMobileMenuOpen(false);
+  };
+
+  const handleNavigate = (route) => {
+    if (route === "Characters") {
+      router.push("/characters");
+    } else if (route === "Comics") {
+      router.push("/comics");
+    } else if (route === "Favorites") {
+      router.push("/favorites");
+    } else if (route === "Home") {
+      router.push("/");
+    }
+    setIsMobileMenuOpen(false);
+  };
 
   useEffect(() => {
     const fetchCharacters = async () => {
@@ -53,52 +74,96 @@ export default function CharactersScreen() {
   );
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Marvel Characters</Text>
-      <View style={styles.searchBar}>
-        <TextInput
-          style={styles.input}
-          placeholder="Search characters..."
-          placeholderTextColor="#888"
-          value={search}
-          onChangeText={setSearch}
-          onSubmitEditing={() => setPage(1)}
-        />
-      </View>
-      {isLoading ? (
-        <ActivityIndicator size="large" color="#e62429" style={{ marginTop: 40 }} />
-      ) : error ? (
-        <Text style={styles.error}>{error}</Text>
-      ) : characters.length === 0 ? (
-        <Text style={styles.noResult}>No characters found.</Text>
-      ) : (
-        <>
-          <FlatList
-            data={characters}
-            renderItem={renderItem}
-            keyExtractor={item => item._id}
-            contentContainerStyle={styles.list}
+    <>
+      <Stack.Screen
+        options={{
+          title: "Characters",
+          headerRight: () => (
+            <TouchableOpacity style={headerStyles.burgerMenu} onPress={() => setIsMobileMenuOpen(true)}>
+              <Ionicons name="menu" size={28} color="#fff" />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+      <Modal
+        visible={isMobileMenuOpen}
+        animationType="slide"
+        transparent
+        onRequestClose={() => setIsMobileMenuOpen(false)}
+      >
+        <Pressable style={headerStyles.overlay} onPress={() => setIsMobileMenuOpen(false)} />
+        <View style={headerStyles.mobileMenu}>
+          <TouchableOpacity onPress={() => handleNavigate("Characters")}> 
+            <Text style={headerStyles.mobileNavLink}>Characters</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleNavigate("Comics")}> 
+            <Text style={headerStyles.mobileNavLink}>Comics</Text>
+          </TouchableOpacity>
+          {userToken && (
+            <TouchableOpacity onPress={() => handleNavigate("Favorites")}> 
+              <Text style={headerStyles.mobileNavLink}>Favorites</Text>
+            </TouchableOpacity>
+          )}
+          {userToken ? (
+            <TouchableOpacity onPress={handleLogout}> 
+              <Text style={headerStyles.mobileNavLink}>Log out</Text>
+            </TouchableOpacity>
+          ) : null}
+          <TouchableOpacity
+            style={headerStyles.closeButton}
+            onPress={() => setIsMobileMenuOpen(false)}
+          >
+            <Ionicons name="close" size={32} color="#fff" />
+          </TouchableOpacity>
+        </View>
+      </Modal>
+      <View style={styles.container}>
+        <Text style={styles.title}>Marvel Characters</Text>
+        <View style={styles.searchBar}>
+          <TextInput
+            style={styles.input}
+            placeholder="Search characters..."
+            placeholderTextColor="#888"
+            value={search}
+            onChangeText={setSearch}
+            onSubmitEditing={() => setPage(1)}
           />
-          <View style={styles.pagination}>
-            <TouchableOpacity
-              style={[styles.pageBtn, page === 1 && styles.pageBtnDisabled]}
-              onPress={() => setPage(page - 1)}
-              disabled={page === 1}
-            >
-              <MaterialCommunityIcons name="arrow-left" size={24} color="#fff" />
-            </TouchableOpacity>
-            <Text style={styles.pageInfo}>{page} / {totalPages}</Text>
-            <TouchableOpacity
-              style={[styles.pageBtn, page === totalPages && styles.pageBtnDisabled]}
-              onPress={() => setPage(page + 1)}
-              disabled={page === totalPages}
-            >
-              <MaterialCommunityIcons name="arrow-right" size={24} color="#fff" />
-            </TouchableOpacity>
-          </View>
-        </>
-      )}
-    </View>
+        </View>
+        {isLoading ? (
+          <ActivityIndicator size="large" color="#e62429" style={{ marginTop: 40 }} />
+        ) : error ? (
+          <Text style={styles.error}>{error}</Text>
+        ) : characters.length === 0 ? (
+          <Text style={styles.noResult}>No characters found.</Text>
+        ) : (
+          <>
+            <FlatList
+              data={characters}
+              renderItem={renderItem}
+              keyExtractor={item => item._id}
+              contentContainerStyle={styles.list}
+            />
+            <View style={styles.pagination}>
+              <TouchableOpacity
+                style={[styles.pageBtn, page === 1 && styles.pageBtnDisabled]}
+                onPress={() => setPage(page - 1)}
+                disabled={page === 1}
+              >
+                <MaterialCommunityIcons name="arrow-left" size={24} color="#fff" />
+              </TouchableOpacity>
+              <Text style={styles.pageInfo}>{page} / {totalPages}</Text>
+              <TouchableOpacity
+                style={[styles.pageBtn, page === totalPages && styles.pageBtnDisabled]}
+                onPress={() => setPage(page + 1)}
+                disabled={page === totalPages}
+              >
+                <MaterialCommunityIcons name="arrow-right" size={24} color="#fff" />
+              </TouchableOpacity>
+            </View>
+          </>
+        )}
+      </View>
+    </>
   );
 }
 
