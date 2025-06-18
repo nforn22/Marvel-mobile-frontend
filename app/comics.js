@@ -52,13 +52,13 @@ export default function ComicsScreen() {
 
   const handleNavigate = (route) => {
     if (route === "Characters") {
-      router.push("/characters");
+      router.replace("/characters");
     } else if (route === "Comics") {
-      router.push("/comics");
+      router.replace("/comics");
     } else if (route === "Favorites") {
-      router.push("/favorites");
+      router.replace("/favorites");
     } else if (route === "Home") {
-      router.push("/");
+      router.replace("/");
     }
     setIsMobileMenuOpen(false);
   };

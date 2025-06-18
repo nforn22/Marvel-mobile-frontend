@@ -11,11 +11,21 @@ export default function HomeScreen() {
     router.push('/comics');
   };
 
+  const handleHeaderNavigate = (route) => {
+    if (route === "Home") {
+      router.push("/");
+    } else if (route === "Characters") {
+      router.push("/characters");
+    } else if (route === "Comics") {
+      router.push("/comics");
+    }
+  };
+
   return (
     <>
       <Stack.Screen options={{ headerShown: false }} />
       <View style={{ flex: 1 }}>
-        <Header />
+        <Header onNavigate={handleHeaderNavigate} />
         <ScrollView contentContainerStyle={styles.container}>
           <ImageBackground
             source={require("../assets/bg-home.jpg")}
