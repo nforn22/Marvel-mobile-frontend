@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { View, Text, Image, TouchableOpacity, Modal, Pressable } from "react-native";
 import { styles } from "./Header.styles";
 import marvelLogo from "../../../assets/Marvel-logo.png";
 import { Ionicons } from '@expo/vector-icons';
 import { router } from "expo-router";
+import { AuthContext } from "../../../app/_layout";
 
 export const Header = ({
   onOpenSignupModal,
@@ -13,15 +14,20 @@ export const Header = ({
   onNavigate,
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { token, logout } = useContext(AuthContext);
 
   const handleLogout = () => {
-    setUserToken && setUserToken(null);
+    if (logout) logout();
     setIsMobileMenuOpen(false);
   };
 
   const handleNavigate = (route) => {
     if (route === "Characters") {
       router.push("/characters");
+    } else if (route === "Comics") {
+      router.push("/comics");
+    } else if (route === "Favorites") {
+      router.push("/favorites"); // TODO : implementer logique réelle
     } else if (onNavigate) {
       onNavigate(route);
     }
@@ -55,15 +61,15 @@ export const Header = ({
           <TouchableOpacity onPress={() => handleNavigate("Comics")}> 
             <Text style={styles.mobileNavLink}>Comics</Text>
           </TouchableOpacity>
-          {userToken && (
-            <TouchableOpacity onPress={() => handleNavigate("Favorites")}> 
-              <Text style={styles.mobileNavLink}>Favorites</Text>
-            </TouchableOpacity>
-          )}
-          {userToken ? (
-            <TouchableOpacity onPress={handleLogout}> 
-              <Text style={styles.mobileNavLink}>Log out</Text>
-            </TouchableOpacity>
+          {token ? (
+            <>
+              <TouchableOpacity onPress={() => handleNavigate("Favorites")}> 
+                <Text style={styles.mobileNavLink}>Favorites</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleLogout}> 
+                <Text style={styles.mobileNavLink}>Log out</Text>
+              </TouchableOpacity>
+            </>
           ) : (
             <>
               <TouchableOpacity onPress={() => { router.push('/auth/signup'); setIsMobileMenuOpen(false); }}> 
