@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, StyleSheet 
 import { AuthContext } from "../_layout";
 import { router, Link } from "expo-router";
 import axios from "axios";
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const API_URL = "https://site--marvel-backend--t29qzrn4njwx.code.run";
 
@@ -72,7 +73,7 @@ export default function Login() {
             autoCapitalize="none"
           />
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-            <Text style={styles.toggleEye}>{showPassword ? "🙈" : "👁️"}</Text>
+            <Ionicons name={showPassword ? "eye-off" : "eye"} size={24} color="#e62429" style={styles.toggleEye} />
           </TouchableOpacity>
         </View>
         {errors.password && <Text style={styles.error}>{errors.password}</Text>}
